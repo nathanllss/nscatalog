@@ -7,10 +7,10 @@ import com.nathanlucas.nscatalog.entities.Product;
 import com.nathanlucas.nscatalog.mappers.ProductMapper;
 import com.nathanlucas.nscatalog.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,9 +24,15 @@ public class ProductController {
     private ProductMapper productMapper;
 
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
-        List<ProductDTO> result = productService.getAllProducts()
-                .stream().map(this::mapToDTO).toList();
+    public ResponseEntity<Page<ProductDTO>> getAllProducts(@RequestParam(defaultValue = "", name = "name")String name,
+                                                           Pageable pageable) {
+        Page<ProductDTO> result = productService.getAllProducts(name, pageable).map(this::mapToDTO);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
+        ProductDTO result = mapToDTO(productService.findProductById(id));
         return ResponseEntity.ok(result);
     }
 
