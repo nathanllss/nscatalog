@@ -1,6 +1,7 @@
 package com.nathanlucas.nscatalog.controllers;
 
-import com.nathanlucas.nscatalog.entities.Category;
+import com.nathanlucas.nscatalog.dtos.CategoryDTO;
+import com.nathanlucas.nscatalog.mappers.CategoryMapper;
 import com.nathanlucas.nscatalog.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +15,16 @@ import java.util.List;
 @RequestMapping(value = "/categories")
 public class CategoryController {
 
+
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private CategoryMapper categoryMapper;
 
     @GetMapping
-    public ResponseEntity<List<Category>> findAll() {
-        List<Category> result = categoryService.findAll();
+    public ResponseEntity<List<CategoryDTO>> findAll() {
+        List<CategoryDTO> result = categoryService.findAll()
+                .stream().map(categoryMapper::entityToDTO).toList();
         return ResponseEntity.ok(result);
     }
 }
