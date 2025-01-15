@@ -50,4 +50,10 @@ public class CategoryController {
         CategoryDTO result = categoryMapper.entityToDTO(categoryService.update(id,cat));
         return ResponseEntity.ok(result);
     }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable(name = "id") Long id) {
+        categoryService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

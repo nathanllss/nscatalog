@@ -2,11 +2,13 @@ package com.nathanlucas.nscatalog.services;
 
 import com.nathanlucas.nscatalog.entities.Category;
 import com.nathanlucas.nscatalog.repositories.CategoryRepository;
+import com.nathanlucas.nscatalog.services.exception.DatabaseException;
 import com.nathanlucas.nscatalog.services.exception.ResourceNotFoundException;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -48,5 +50,17 @@ public class CategoryService {
 
     private void updateEntity(Category source, Category target) {
         BeanUtils.copyProperties(source, target, "id");
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void delete(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Id not found: " + id);
+        }
+        try {
+            categoryRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Integrity violation");
+        }
     }
 }
