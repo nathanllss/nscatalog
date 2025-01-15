@@ -1,26 +1,23 @@
 package com.nathanlucas.nscatalog.entities;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "tb_category")
-public class Category {
+public class Category extends BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-    @CreationTimestamp
-    private Instant createdAt;
-    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-    @UpdateTimestamp
-    private Instant updatedAt;
+
+    @ManyToMany(mappedBy = "categories")
+    private List<Product> products = new ArrayList<>();
 
     public Category() {
     }
@@ -46,30 +43,18 @@ public class Category {
         this.name = name;
     }
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
+    public List<Product> getProducts() {
+        return products;
     }
 
     @PrePersist
-    public void prePersist(){
-        createdAt = Instant.now();
+    public void prePersist() {
+        super.createdAt = Instant.now();
     }
 
     @PreUpdate
-    public void preUpdate(){
-        updatedAt = Instant.now();
+    public void preUpdate() {
+        super.updatedAt = Instant.now();
     }
 
     @Override
