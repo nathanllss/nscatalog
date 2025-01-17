@@ -5,13 +5,13 @@ import com.nathanlucas.nscatalog.dtos.ProductDTO;
 import com.nathanlucas.nscatalog.entities.Category;
 import com.nathanlucas.nscatalog.entities.Product;
 import com.nathanlucas.nscatalog.mappers.ProductMapper;
+import com.nathanlucas.nscatalog.mappers.ProductMapperImpl;
 
 import java.time.Instant;
 
 public class Factory {
 
-
-    private static ProductMapper productMapper;
+    private static ProductMapper productMapper = new ProductMapperImpl();
 
     public static Product createProduct() {
         Product product = new Product(1L, "Phone", "Good Phone", 800.0, "https://img.com/img.png");

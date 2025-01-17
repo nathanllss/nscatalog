@@ -1,6 +1,5 @@
 package com.nathanlucas.nscatalog.services;
 
-import com.nathanlucas.nscatalog.dtos.ProductDTO;
 import com.nathanlucas.nscatalog.entities.Product;
 import com.nathanlucas.nscatalog.factories.Factory;
 import com.nathanlucas.nscatalog.repositories.ProductRepository;
@@ -16,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,9 +45,6 @@ public class ProductServiceTest {
         product = Factory.createProduct();
         page = new PageImpl<>(List.of(product));
 
-//        when(repository.save(any())).thenReturn(product);
-//        when(repository.findById(existingId)).thenReturn(Optional.of(product));
-//        when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
     }
 
     @Test
@@ -58,7 +53,7 @@ public class ProductServiceTest {
 
         Pageable pageable = PageRequest.of(0, 20);
 
-        Page<Product> result = service.getAllProducts("",pageable);
+        Page<Product> result = service.getAllProducts("", pageable);
 
         assertNotNull(result);
         assertThat(result.getNumber()).isEqualTo(0);
