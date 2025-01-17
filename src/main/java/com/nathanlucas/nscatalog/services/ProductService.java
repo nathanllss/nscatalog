@@ -34,8 +34,8 @@ public class ProductService {
     }
 
     @Transactional
-    public Product save(Product category) {
-        return productRepository.save(category);
+    public Product save(Product product) {
+        return productRepository.save(product);
     }
 
     @Transactional

@@ -1,12 +1,10 @@
 package com.nathanlucas.nscatalog.factories;
 
 
-
 import com.nathanlucas.nscatalog.dtos.ProductDTO;
 import com.nathanlucas.nscatalog.entities.Category;
 import com.nathanlucas.nscatalog.entities.Product;
 import com.nathanlucas.nscatalog.mappers.ProductMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Instant;
 
