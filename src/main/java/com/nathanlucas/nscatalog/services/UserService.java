@@ -1,6 +1,8 @@
 package com.nathanlucas.nscatalog.services;
 
+import com.nathanlucas.nscatalog.entities.Role;
 import com.nathanlucas.nscatalog.entities.User;
+import com.nathanlucas.nscatalog.repositories.RoleRepository;
 import com.nathanlucas.nscatalog.repositories.UserRepository;
 import com.nathanlucas.nscatalog.services.exception.DatabaseException;
 import com.nathanlucas.nscatalog.services.exception.ResourceNotFoundException;
@@ -23,6 +25,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Transactional(readOnly = true)
     public Page<User> getAllUsers(Pageable pageable) {
@@ -38,7 +42,8 @@ public class UserService {
 
     @Transactional
     public User save(User user) {
-        setEncodePassword(user);
+        setUserRolesForResponse(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -54,7 +59,9 @@ public class UserService {
     }
 
     private void updateEntity(User source, User target) {
+        target.getRoles().clear();
         BeanUtils.copyProperties(source, target, "id");
+        target.getRoles().addAll(source.getRoles());
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -69,7 +76,10 @@ public class UserService {
         }
     }
 
-    private void setEncodePassword(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    private void setUserRolesForResponse(User user) {
+        for (Role role : user.getRoles()) {
+            role.setAuthority(roleRepository.findById(role.getId()).get().getAuthority());
+        }
     }
+
 }

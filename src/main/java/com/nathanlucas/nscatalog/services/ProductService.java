@@ -1,5 +1,6 @@
 package com.nathanlucas.nscatalog.services;
 
+import com.nathanlucas.nscatalog.entities.Category;
 import com.nathanlucas.nscatalog.entities.Product;
 import com.nathanlucas.nscatalog.repositories.ProductRepository;
 import com.nathanlucas.nscatalog.services.exception.DatabaseException;
@@ -39,18 +40,14 @@ public class ProductService {
     }
 
     @Transactional
-    public Product update(Long id, Product category) {
+    public Product update(Long id, Product product) {
         try {
             Product entity = productRepository.getReferenceById(id);
-            updateEntity(category, entity);
+            updateEntity(product, entity);
             return productRepository.save(entity);
         } catch (Exception e) {
             throw new ResourceNotFoundException("Id not found: " + id);
         }
-    }
-
-    private void updateEntity(Product source, Product target) {
-        BeanUtils.copyProperties(source, target, "id");
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -63,5 +60,11 @@ public class ProductService {
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Integrity violation");
         }
+    }
+
+    private void updateEntity(Product source, Product target) {
+        target.getCategories().clear();
+        BeanUtils.copyProperties(source, target, "id");
+        target.getCategories().addAll(source.getCategories());
     }
 }
