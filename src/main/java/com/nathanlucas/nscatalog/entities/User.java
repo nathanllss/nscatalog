@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "tb_user")
-public class User {
+public class User extends BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
