@@ -2,9 +2,7 @@ package com.nathanlucas.nscatalog.entities;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "tb_role")
@@ -18,6 +16,7 @@ public class Role {
 
     public Role() {
     }
+
     public Role(Long id, String authority) {
         this.id = id;
         this.authority = authority;

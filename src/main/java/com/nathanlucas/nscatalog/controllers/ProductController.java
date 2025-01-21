@@ -4,6 +4,7 @@ import com.nathanlucas.nscatalog.dtos.ProductDTO;
 import com.nathanlucas.nscatalog.entities.Product;
 import com.nathanlucas.nscatalog.mappers.ProductMapper;
 import com.nathanlucas.nscatalog.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +37,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDTO> insertProduct(@RequestBody ProductDTO dto) {
+    public ResponseEntity<ProductDTO> insertProduct(@Valid @RequestBody ProductDTO dto) {
         Product product = productService.save(mapToEntity(dto));
         ProductDTO result = mapToDTO(product);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(result.getId()).toUri();
@@ -44,7 +45,7 @@ public class ProductController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable(name = "id") Long id, @RequestBody ProductDTO dto) {
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable(name = "id") Long id,@Valid @RequestBody ProductDTO dto) {
         Product product = mapToEntity(dto);
         ProductDTO result = mapToDTO(productService.update(id, product));
         return ResponseEntity.ok(result);

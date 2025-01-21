@@ -3,6 +3,7 @@ package com.nathanlucas.nscatalog.entities;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.validation.constraints.FutureOrPresent;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -14,6 +15,7 @@ import java.time.Instant;
 public abstract class BaseModel {
 
     @CreationTimestamp
+    @FutureOrPresent
     @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE", updatable = false)
     protected Instant createdAt;
 
