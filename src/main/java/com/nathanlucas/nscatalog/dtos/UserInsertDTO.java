@@ -1,5 +1,8 @@
 package com.nathanlucas.nscatalog.dtos;
 
+import com.nathanlucas.nscatalog.services.validation.UserInsertValid;
+
+@UserInsertValid
 public class UserInsertDTO extends UserDTO {
 
     private String password;

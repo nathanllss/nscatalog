@@ -15,7 +15,7 @@ import java.time.Instant;
 public abstract class BaseModel {
 
     @CreationTimestamp
-    @FutureOrPresent
+    @FutureOrPresent(message = "A data deve ser presente ou futura")
     @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE", updatable = false)
     protected Instant createdAt;
 

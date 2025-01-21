@@ -7,6 +7,7 @@ import com.nathanlucas.nscatalog.entities.User;
 import com.nathanlucas.nscatalog.mappers.RoleMapper;
 import com.nathanlucas.nscatalog.mappers.UserMapper;
 import com.nathanlucas.nscatalog.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +41,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> insertUser(@RequestBody UserInsertDTO dto) {
+    public ResponseEntity<UserDTO> insertUser(@Valid @RequestBody UserInsertDTO dto) {
         User user = userService.save(mapInsertToEntity(dto));
         UserDTO result = mapToDTO(user);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(result.getId()).toUri();
@@ -49,7 +50,7 @@ public class UserController {
 
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable(name = "id") Long id, @RequestBody UserInsertDTO dto) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable(name = "id") Long id, @Valid @RequestBody UserInsertDTO dto) {
         User user = mapInsertToEntity(dto);
         UserDTO result = mapToDTO(userService.update(id, user));
         return ResponseEntity.ok(result);
