@@ -3,6 +3,7 @@ package com.nathanlucas.nscatalog.controllers;
 import com.nathanlucas.nscatalog.dtos.RoleDTO;
 import com.nathanlucas.nscatalog.dtos.UserDTO;
 import com.nathanlucas.nscatalog.dtos.UserInsertDTO;
+import com.nathanlucas.nscatalog.dtos.UserUpdateDTO;
 import com.nathanlucas.nscatalog.entities.User;
 import com.nathanlucas.nscatalog.mappers.RoleMapper;
 import com.nathanlucas.nscatalog.mappers.UserMapper;
@@ -50,11 +51,12 @@ public class UserController {
 
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable(name = "id") Long id, @Valid @RequestBody UserInsertDTO dto) {
-        User user = mapInsertToEntity(dto);
+    public ResponseEntity<UserDTO> updateUser(@PathVariable(name = "id") Long id, @Valid @RequestBody UserUpdateDTO dto) {
+        User user = mapUpdateToEntity(dto);
         UserDTO result = mapToDTO(userService.update(id, user));
         return ResponseEntity.ok(result);
     }
+
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable(name = "id") Long id) {
@@ -68,6 +70,9 @@ public class UserController {
 
     private User mapToEntity(UserDTO userDTO) {
         return userMapper.dtoToEntity(userDTO);
+    }
+    private User mapUpdateToEntity(UserUpdateDTO dto) {
+        return userMapper.dtoToEntity(dto);
     }
 
     private User mapInsertToEntity(UserInsertDTO dto) {
