@@ -5,6 +5,8 @@ import com.nathanlucas.nscatalog.dtos.ProductDTO;
 import com.nathanlucas.nscatalog.entities.Product;
 import com.nathanlucas.nscatalog.factories.Factory;
 import com.nathanlucas.nscatalog.services.exception.ResourceNotFoundException;
+import com.nathanlucas.nscatalog.util.TokenUtil;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,18 +32,26 @@ public class ProductControllerIT {
 
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private TokenUtil tokenUtil;
 
     private Long existingId;
     private Long nonExistingId;
     private Long dependentId;
     private Long countTotalProducts;
+    private String username, password, bearerToken;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws Exception {
         existingId = 1L;
         nonExistingId = 1000L;
         dependentId = 4L;
         countTotalProducts = 25L;
+
+        username = "maria@gmail.com";
+        password = "123456";
+
+        bearerToken = tokenUtil.obtainAccessToken(mockMvc, username, password);
     }
 
     @Test
@@ -63,6 +73,7 @@ public class ProductControllerIT {
         String jsonBody = objectMapper.writeValueAsString(dto);
 
         mockMvc.perform(put("/products/{id}", existingId)
+                        .header("Authorization", "Bearer " + bearerToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -80,6 +91,7 @@ public class ProductControllerIT {
         String jsonBody = objectMapper.writeValueAsString(dto);
 
         mockMvc.perform(put("/products/{id}", nonExistingId)
+                        .header("Authorization", "Bearer " + bearerToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON))
