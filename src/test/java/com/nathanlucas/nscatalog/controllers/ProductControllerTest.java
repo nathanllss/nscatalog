@@ -5,15 +5,20 @@ import com.nathanlucas.nscatalog.NscatalogApplication;
 import com.nathanlucas.nscatalog.dtos.ProductDTO;
 import com.nathanlucas.nscatalog.entities.Product;
 import com.nathanlucas.nscatalog.factories.Factory;
+import com.nathanlucas.nscatalog.mappers.ProductMapper;
 import com.nathanlucas.nscatalog.services.ProductService;
 import com.nathanlucas.nscatalog.services.exception.DatabaseException;
 import com.nathanlucas.nscatalog.services.exception.ResourceNotFoundException;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -25,18 +30,14 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@AutoConfigureMockMvc
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = NscatalogApplication.class
-)
+@WebMvcTest(value = ProductController.class, excludeAutoConfiguration = {SecurityAutoConfiguration.class})
 public class ProductControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    @Mock
+    @MockBean
     private ProductService service;
     private Product entity;
     private ProductDTO dto;
@@ -105,7 +106,7 @@ public class ProductControllerTest {
 
     @Test
     public void updateProductByIdShouldReturn404IdDoesNotExist() throws Exception {
-        when(service.update(eq(existingId), any(Product.class))).thenThrow(ResourceNotFoundException.class);
+        when(service.update(eq(nonExistingId), any(Product.class))).thenThrow(ResourceNotFoundException.class);
 
         String jsonBody = objectMapper.writeValueAsString(dto);
 

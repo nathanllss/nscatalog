@@ -3,6 +3,7 @@ package com.nathanlucas.nscatalog.controllers;
 import com.nathanlucas.nscatalog.dtos.ProductDTO;
 import com.nathanlucas.nscatalog.entities.Product;
 import com.nathanlucas.nscatalog.mappers.ProductMapper;
+import com.nathanlucas.nscatalog.mappers.ProductMapperImpl;
 import com.nathanlucas.nscatalog.services.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,7 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
-    @Autowired
-    private ProductMapper productMapper;
+    private ProductMapper productMapper = new ProductMapperImpl();
 
     @GetMapping
     public ResponseEntity<Page<ProductDTO>> getAllProducts(@RequestParam(defaultValue = "", name = "name") String name,
