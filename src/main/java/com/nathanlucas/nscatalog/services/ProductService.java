@@ -6,6 +6,7 @@ import com.nathanlucas.nscatalog.projections.ProductProjection;
 import com.nathanlucas.nscatalog.repositories.ProductRepository;
 import com.nathanlucas.nscatalog.services.exception.DatabaseException;
 import com.nathanlucas.nscatalog.services.exception.ResourceNotFoundException;
+import com.nathanlucas.nscatalog.util.Utils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -40,6 +41,7 @@ public class ProductService {
         Page<ProductProjection> page = productRepository.searchProducts(name, pageable,categoryIds);
         List<Long> productIds = page.map(ProductProjection::getId).toList();
         List<Product> entities = productRepository.searchProductWithCategories(productIds);
+        entities = Utils.replace(page.getContent(), entities);
         return new PageImpl<>(entities, page.getPageable(), page.getTotalElements());
     }
 

@@ -20,22 +20,24 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @SuppressWarnings("SqlNoDataSourceInspection")
     @Query(nativeQuery = true, value = """
+            SELECT * FROM (
             SELECT DISTINCT tb_product.id, tb_product.name FROM tb_product
             INNER JOIN tb_product_category ON tb_product.id = tb_product_category.product_id
             WHERE (:categoryIds IS NULL OR tb_product_category.category_id IN :categoryIds)
             AND (UPPER(tb_product.name) LIKE UPPER(CONCAT('%', :name, '%')))
-            ORDER BY tb_product.name
+            ) as tb_result
             """, countQuery = """
             SELECT COUNT(*) FROM (
             SELECT DISTINCT tb_product.id, tb_product.name FROM tb_product
             INNER JOIN tb_product_category ON tb_product.id = tb_product_category.product_id
             WHERE (:categoryIds IS NULL OR tb_product_category.category_id IN :categoryIds)
             AND (UPPER(tb_product.name) LIKE UPPER(CONCAT('%', :name, '%')))
-            ORDER BY tb_product.name) AS tb_result
+            ORDER BY tb_product.name
+            ) AS tb_result
             """)
     Page<ProductProjection> searchProducts(String name, Pageable pageable, List<Long> categoryIds);
 
-    @Query(value = "SELECT obj FROM Product obj JOIN FETCH obj.categories WHERE obj.id IN :categoryIds ORDER BY obj.name")
+    @Query(value = "SELECT obj FROM Product obj JOIN FETCH obj.categories WHERE obj.id IN :categoryIds")
     List<Product> searchProductWithCategories(List<Long> categoryIds);
 }
 
