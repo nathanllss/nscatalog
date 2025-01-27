@@ -41,7 +41,8 @@ public class ProductService {
         Page<ProductProjection> page = productRepository.searchProducts(name, pageable,categoryIds);
         List<Long> productIds = page.map(ProductProjection::getId).toList();
         List<Product> entities = productRepository.searchProductWithCategories(productIds);
-        entities = Utils.replace(page.getContent(), entities);
+        //noinspection unchecked
+        entities = (List<Product>) Utils.replace(page.getContent(), entities);
         return new PageImpl<>(entities, page.getPageable(), page.getTotalElements());
     }
 
