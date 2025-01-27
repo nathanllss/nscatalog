@@ -34,10 +34,11 @@ public class ProductController {
 //    }
 
     @GetMapping
-    public ResponseEntity<Page<ProductProjection>> getAllProductsQuery(@RequestParam(defaultValue = "", name = "name") String name,
+    public ResponseEntity<Page<ProductDTO>> getAllProductsQuery(@RequestParam(defaultValue = "", name = "name") String name,
                                                                        Pageable pageable,
                                                                        @RequestParam(defaultValue = "0", name = "categoryId") String categoryId) {
-        Page<ProductProjection> result = productService.getAllProductsPaged(name, pageable, categoryId);
+        Page<ProductDTO> result = productService.getAllProductsPaged(name, pageable, categoryId)
+                .map(this::mapToDTO);
         return ResponseEntity.ok(result);
     }
 
