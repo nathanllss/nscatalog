@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/categories")
@@ -24,10 +25,16 @@ public class CategoryController {
     @Autowired
     private CategoryMapper categoryMapper;
 
+//    @GetMapping
+//    public ResponseEntity<Page<CategoryDTO>> findAllPaged(@RequestParam(defaultValue = "", name = "name")String name,
+//                                                     Pageable pageable) {
+//        Page<CategoryDTO> result = categoryService.findAllPaged(name,pageable).map(this::mapToDTO);
+//        return ResponseEntity.ok(result);
+//    }
+
     @GetMapping
-    public ResponseEntity<Page<CategoryDTO>> findAll(@RequestParam(defaultValue = "", name = "name")String name,
-                                                     Pageable pageable) {
-        Page<CategoryDTO> result = categoryService.findAll(name,pageable).map(this::mapToDTO);
+    public ResponseEntity<List<CategoryDTO>> findAll() {
+        List<CategoryDTO> result = categoryService.findAll().stream().map(this::mapToDTO).toList();
         return ResponseEntity.ok(result);
     }
 

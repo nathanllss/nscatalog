@@ -23,8 +23,13 @@ public class CategoryService {
     private CategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
-    public Page<Category> findAll(String name, Pageable pageable) {
+    public Page<Category> findAllPaged(String name, Pageable pageable) {
         return categoryRepository.searchByName(name,pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Category> findAll() {
+        return categoryRepository.findAll();
     }
 
     @Transactional(readOnly = true)

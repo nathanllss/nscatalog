@@ -16,9 +16,6 @@ import java.util.List;
 public class AuthService implements UserDetailsService {
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private UserRepository userRepository;
 
     @Override
