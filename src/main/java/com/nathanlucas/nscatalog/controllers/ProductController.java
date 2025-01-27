@@ -4,6 +4,7 @@ import com.nathanlucas.nscatalog.dtos.ProductDTO;
 import com.nathanlucas.nscatalog.entities.Product;
 import com.nathanlucas.nscatalog.mappers.ProductMapper;
 import com.nathanlucas.nscatalog.mappers.ProductMapperImpl;
+import com.nathanlucas.nscatalog.projections.ProductProjection;
 import com.nathanlucas.nscatalog.services.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +27,17 @@ public class ProductController {
     private ProductService productService;
     private ProductMapper productMapper = new ProductMapperImpl();
 
+//    @GetMapping
+//    public ResponseEntity<Page<ProductDTO>> getAllProducts(Pageable pageable) {
+//        Page<ProductDTO> result = productService.getAllProducts(pageable).map(this::mapToDTO);
+//        return ResponseEntity.ok(result);
+//    }
+
     @GetMapping
-    public ResponseEntity<Page<ProductDTO>> getAllProducts(@RequestParam(defaultValue = "", name = "name") String name,
-                                                           Pageable pageable) {
-        Page<ProductDTO> result = productService.getAllProducts(name, pageable).map(this::mapToDTO);
+    public ResponseEntity<Page<ProductProjection>> getAllProductsQuery(@RequestParam(defaultValue = "", name = "name") String name,
+                                                                       Pageable pageable,
+                                                                       @RequestParam(defaultValue = "0", name = "categoryId") String categoryId) {
+        Page<ProductProjection> result = productService.getAllProductsPaged(name, pageable, categoryId);
         return ResponseEntity.ok(result);
     }
 
@@ -50,7 +58,7 @@ public class ProductController {
 
     @PutMapping(value = "/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable(name = "id") Long id,@Valid @RequestBody ProductDTO dto) {
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable(name = "id") Long id, @Valid @RequestBody ProductDTO dto) {
         Product product = mapToEntity(dto);
         ProductDTO result = mapToDTO(productService.update(id, product));
         return ResponseEntity.ok(result);

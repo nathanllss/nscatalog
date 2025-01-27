@@ -2,6 +2,7 @@ package com.nathanlucas.nscatalog.services;
 
 import com.nathanlucas.nscatalog.entities.Category;
 import com.nathanlucas.nscatalog.entities.Product;
+import com.nathanlucas.nscatalog.projections.ProductProjection;
 import com.nathanlucas.nscatalog.repositories.ProductRepository;
 import com.nathanlucas.nscatalog.services.exception.DatabaseException;
 import com.nathanlucas.nscatalog.services.exception.ResourceNotFoundException;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,6 +28,15 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Page<Product> getAllProducts(String name, Pageable pageable) {
         return productRepository.searchAll(name, pageable);
+    }
+    @Transactional(readOnly = true)
+    public Page<ProductProjection> getAllProductsPaged(String name, Pageable pageable, String categoryId) {
+        List<Long> categoryIds = List.of();
+        if (!categoryId.equals("0")) {
+            categoryIds = Arrays.stream(categoryId.split(","))
+                .map(Long::parseLong).toList();
+        }
+        return productRepository.searchProducts(name, pageable,categoryIds);
     }
 
     @Transactional(readOnly = true)
