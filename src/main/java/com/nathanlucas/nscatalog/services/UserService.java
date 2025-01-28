@@ -77,9 +77,13 @@ public class UserService {
     }
 
     private void setUserRolesForResponse(User user) {
-        for (Role role : user.getRoles()) {
-            role.setAuthority(roleRepository.findById(role.getId()).get().getAuthority());
+        if (user.getRoles() != null) {
+            for (Role role : user.getRoles()) {
+                role.setAuthority(roleRepository.findById(role.getId()).get().getAuthority());
+            }
         }
+        user.getRoles().clear();
+        user.getRoles().add(roleRepository.findByAuthority("ROLE_OPERATOR"));
     }
 
 }

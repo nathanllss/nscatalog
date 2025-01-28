@@ -3,6 +3,7 @@ package com.nathanlucas.nscatalog.controllers;
 import com.nathanlucas.nscatalog.dtos.UserDTO;
 import com.nathanlucas.nscatalog.dtos.UserInsertDTO;
 import com.nathanlucas.nscatalog.dtos.UserUpdateDTO;
+import com.nathanlucas.nscatalog.entities.Role;
 import com.nathanlucas.nscatalog.entities.User;
 import com.nathanlucas.nscatalog.mappers.UserMapper;
 import com.nathanlucas.nscatalog.services.UserService;
@@ -41,7 +42,6 @@ public class UserController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> insertUser(@Valid @RequestBody UserInsertDTO dto) {
         User user = userService.save(mapInsertToEntity(dto));
         UserDTO result = mapToDTO(user);
