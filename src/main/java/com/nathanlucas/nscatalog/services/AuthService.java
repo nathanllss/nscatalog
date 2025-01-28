@@ -1,6 +1,7 @@
 package com.nathanlucas.nscatalog.services;
 
 import com.nathanlucas.nscatalog.dtos.EmailDTO;
+import com.nathanlucas.nscatalog.dtos.NewPasswordDTO;
 import com.nathanlucas.nscatalog.entities.PasswordRecover;
 import com.nathanlucas.nscatalog.entities.Role;
 import com.nathanlucas.nscatalog.entities.User;
@@ -13,7 +14,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -37,6 +40,9 @@ public class AuthService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -74,5 +80,16 @@ public class AuthService implements UserDetailsService {
                 + "\n\nO link expira em " + tokenMinutes + " minutos";
 
         emailService.sendEmail(body.getEmail(), "Recuperação de senha", text);
+    }
+
+    @Transactional
+    public void saveNewPassword(NewPasswordDTO body) {
+        List<PasswordRecover> result = passwordRecoverRepository.searchValidTokens(body.getToken(), Instant.now());
+        if (result.isEmpty()) {
+            throw new ResourceNotFoundException("Token inválido");
+        }
+        User user = userRepository.findByEmail(result.get(0).getEmail()).get();
+        user.setPassword(passwordEncoder.encode(body.getPassword()));
+        user = userRepository.save(user);
     }
 }
