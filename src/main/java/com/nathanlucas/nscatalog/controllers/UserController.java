@@ -34,6 +34,13 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping(value = "/me")
+    @PreAuthorize("hasAnyRole('OPERATOR','ADMIN')")
+    public ResponseEntity<UserDTO> getMe() {
+        UserDTO result = mapToDTO(userService.findMe());
+        return ResponseEntity.ok(result);
+    }
+
     @GetMapping(value = "/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {

@@ -27,6 +27,8 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private AuthService authService;
 
     @Transactional(readOnly = true)
     public Page<User> getAllUsers(Pageable pageable) {
@@ -74,6 +76,10 @@ public class UserService {
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Integrity violation");
         }
+    }
+
+    public User findMe() {
+        return authService.authenticated();
     }
 
     private void setUserRolesForResponse(User user) {
